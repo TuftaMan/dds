@@ -1,0 +1,133 @@
+{% extends "dds/base.html" %}
+
+{% block title %}{{ title }} — ДДС{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">{{ title }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label">Дата <span class="text-danger">*</span></label>
+                        {{ form.date }}
+                        {% if form.date.errors %}
+                            <div class="text-danger small">{{ form.date.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Статус <span class="text-danger">*</span></label>
+                        {{ form.status }}
+                        {% if form.status.errors %}
+                            <div class="text-danger small">{{ form.status.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Тип <span class="text-danger">*</span></label>
+                        {{ form.transaction_type }}
+                        {% if form.transaction_type.errors %}
+                            <div class="text-danger small">{{ form.transaction_type.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Категория <span class="text-danger">*</span></label>
+                        {{ form.category }}
+                        {% if form.category.errors %}
+                            <div class="text-danger small">{{ form.category.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Подкатегория <span class="text-danger">*</span></label>
+                        {{ form.subcategory }}
+                        {% if form.subcategory.errors %}
+                            <div class="text-danger small">{{ form.subcategory.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Сумма <span class="text-danger">*</span></label>
+                        {{ form.amount }}
+                        {% if form.amount.errors %}
+                            <div class="text-danger small">{{ form.amount.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Комментарий</label>
+                        {{ form.comment }}
+                        {% if form.comment.errors %}
+                            <div class="text-danger small">{{ form.comment.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                        <a href="{% url 'dds:transaction_list' %}" class="btn btn-outline-secondary">Отмена</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+// Скрипты
+{% block scripts %}
+<script>
+    // URL для получения категорий и подкатегорий через AJAX
+    const urlCategories = "{% url 'dds:get_categories' %}";
+    const urlSubcategories = "{% url 'dds:get_subcategories' %}";
+
+    // Поля формы
+    const typeSelect = document.getElementById("id_transaction_type");
+    const categorySelect = document.getElementById("id_category");
+    const subcategorySelect = document.getElementById("id_subcategory");
+
+    // Очищает выпадающий список и оставляет только пустой пункт
+    function resetSelect(select, placeholder) {
+        select.innerHTML = `<option value="">---------</option>`;
+    }
+
+    // При изменении типа операции загружаем соответствующие категории
+    typeSelect.addEventListener("change", function () {
+        resetSelect(categorySelect);
+        resetSelect(subcategorySelect);
+
+        const typeId = this.value;
+        if (!typeId) return;
+
+        fetch(`${urlCategories}?type_id=${typeId}`)
+            .then(res => res.json())
+            .then(data => {
+                data.forEach(cat => {
+                    categorySelect.innerHTML += `<option value="${cat.id}">${cat.name}</option>`;
+                });
+            });
+    });
+
+    // При изменении категории загружаем соответствующие подкатегории
+    categorySelect.addEventListener("change", function () {
+        resetSelect(subcategorySelect);
+
+        const categoryId = this.value;
+        if (!categoryId) return;
+
+        fetch(`${urlSubcategories}?category_id=${categoryId}`)
+            .then(res => res.json())
+            .then(data => {
+                data.forEach(sub => {
+                    subcategorySelect.innerHTML += `<option value="${sub.id}">${sub.name}</option>`;
+                });
+            });
+    });
+</script>
+{% endblock %}

@@ -160,27 +160,15 @@ class Transaction(models.Model):
         errors = {}
 
         if self.amount is not None and self.amount <= 0:
-            errors["amount"] = (
-                "Сумма должна быть больше нуля"
-            )
+            errors["amount"] = "Сумма должна быть больше нуля"
 
-        if (
-            self.category
-            and self.transaction_type
-            and self.category.transaction_type != self.transaction_type
-        ):
-            errors["category"] = (
-                "Категория не относится к выбранному типу"
-            )
+        if self.category_id and self.transaction_type_id:
+            if self.category.transaction_type_id != self.transaction_type_id:
+                errors["category"] = "Категория не относится к выбранному типу"
 
-        if (
-            self.subcategory
-            and self.category
-            and self.subcategory.category != self.category
-        ):
-            errors["subcategory"] = (
-                "Подкатегория не относится к выбранной категории"
-            )
+        if self.subcategory_id and self.category_id:
+            if self.subcategory.category_id != self.category_id:
+                errors["subcategory"] = "Подкатегория не относится к выбранной категории"
 
         if errors:
             raise ValidationError(errors)

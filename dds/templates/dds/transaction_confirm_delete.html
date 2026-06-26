@@ -1,0 +1,58 @@
+{% extends "dds/base.html" %}
+
+{% block title %}Удаление записи — ДДС{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0">Удаление записи</h4>
+            </div>
+            <div class="card-body">
+                <p>Вы уверены, что хотите удалить эту запись?</p>
+                <table class="table table-bordered">
+                    <tr>
+                        <th>Дата</th>
+                        <td>{{ transaction.date|date:"d.m.Y" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Статус</th>
+                        <td>{{ transaction.status }}</td>
+                    </tr>
+                    <tr>
+                        <th>Тип</th>
+                        <td>{{ transaction.transaction_type }}</td>
+                    </tr>
+                    <tr>
+                        <th>Категория</th>
+                        <td>{{ transaction.category }}</td>
+                    </tr>
+                    <tr>
+                        <th>Подкатегория</th>
+                        <td>{{ transaction.subcategory }}</td>
+                    </tr>
+                    <tr>
+                        <th>Сумма</th>
+                        <td>{{ transaction.amount }} ₽</td>
+                    </tr>
+                    {% if transaction.comment %}
+                    <tr>
+                        <th>Комментарий</th>
+                        <td>{{ transaction.comment }}</td>
+                    </tr>
+                    {% endif %}
+                </table>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-danger">Удалить</button>
+                        <a href="{% url 'dds:transaction_list' %}" class="btn btn-outline-secondary">Отмена</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "dds/base.html" %}
+
+{% block title %}{{ title }} — ДДС{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">{{ title }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Название <span class="text-danger">*</span></label>
+                        <input type="text" name="name" class="form-control" value="{{ object.name }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Тип <span class="text-danger">*</span></label>
+                        <select name="transaction_type" class="form-control" required>
+                            <option value="">Выберите тип</option>
+                            {% for t in types %}
+                                <option value="{{ t.id }}" {% if t.id == selected_type_id %}selected{% endif %}>
+                                    {{ t.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                        <a href="{% url 'dds:references' %}" class="btn btn-outline-secondary">Отмена</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
