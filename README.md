@@ -89,7 +89,7 @@ pip install -r requirements.txt
 
 ---
 
-## 3. Создать файл .env
+## 4. Создать файл .env
 
 ```bash
 В корне проекта создайте файл .env и добавьте в него:
@@ -98,9 +98,7 @@ SECRET_KEY=ваш_secret_key
 
 При необходимости новый SECRET_KEY можно сгенерировать командой: 
 
-python -c "from django.core.management.utils import get_random_secret_key; 
-
-print(get_random_secret_key())"
+python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
 ```
 
 ---
